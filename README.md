@@ -1,2 +1,3 @@
-# BBB-Bot-PY
-# BBB-Bot-PY
+# WIP
+## DC Bot for Bound By Books
+
