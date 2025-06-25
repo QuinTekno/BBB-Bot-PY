@@ -1,5 +1,10 @@
 import discord
-from discord.ext.commands import Bot
+from discord.ext import commands
+from discord_slash import SlashCommand  #type: ignore # type: ignore
+import discord.app_commands
+bot = commands.Bot(command_prefix="/")
+slash = SlashCommand(bot, sync_commands=True)
+
 import asyncio
 import random
 import json
@@ -9,7 +14,22 @@ intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
 
-bot = Bot(command_prefix="!", intents=intents)
+@bot.event
+async def on_ready():
+    print("Bot is ready!")
+    guild = bot.get_guild(1357656640526094398)
+    await slash.add_slash_command(clear_messages, guild_ids=[guild.id])
+
+@slash.slash(name='purge', description='Clear a certain number of messages from the channel')
+async def clear_messages(ctx, amount: int = 100):
+    await ctx.message.delete()
+    await ctx.channel.purge(limit=amount)
+
+@bot.event
+async def on_message(message):
+    if message.content.startswith("/"):
+        await message.channel.send("Available commands: /purge")
+
 
 
 # Store warnings and AFK status in a JSON file (or database)
@@ -168,5 +188,5 @@ async def on_message(message):
 
 
 # Start the bot
-bot.run('token_here_uhg')
+bot.run('MTM4Njc1ODY5ODY0NjUwNzc1MQ.GPm09f.JO1yfh94GNEnzwHHo9ymHFuWghVGU8hqFXXp0k')
 
